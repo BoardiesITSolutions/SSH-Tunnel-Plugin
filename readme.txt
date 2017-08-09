@@ -57,3 +57,4 @@ between Linux and Windows is maintained.
 - Test the code for memory leaks, don't worry, if you miss one too much, its easily done, but please try to ensure memory leaks do not occur due to your code changes
 - If you're using your own IDE - if you're developing for Linux you have to, but please ensure that any specific IDE files or directories that are created are not pushed
 to GitHub. 
+Join the chat at https://gitter.im/SSH-Tunnel-Plugin-for-Boardies-MySQL-Manager/Lobby
