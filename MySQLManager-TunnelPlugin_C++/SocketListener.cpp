@@ -30,23 +30,32 @@ void SocketListener::startSocketListener()
 {
     try
     {
-	if (!this->socketManager.createSocket(AF_INET, SOCK_STREAM, IPPROTO_TCP,
-		StaticSettings::AppSettings::listenSocket, 1024, "127.0.0.1"))
-	{
-	}
-	if (!this->socketManager.bindAndStartListening())
-	{
-	}
-        this->threadStarted = true;
-	this->threadSocketListener = thread(&SocketListener::socketListenerThread, this);
+		if (!this->socketManager.createSocket(AF_INET, SOCK_STREAM, IPPROTO_TCP,
+			StaticSettings::AppSettings::listenSocket, 1024, "127.0.0.1"))
+		{
+			this->logger->writeToLog("Failed to prepare socket. Cannot continue");
+			return;
+		}
 	
-	this->logger->writeToLog("Server socket has been successfully opened", "SocketListener", "startSocketListener");
+		if (!this->socketManager.bindAndStartListening())
+		{
+			this->logger->writeToLog("Failed to bind socket. Retrying in 10 seconds");
+			this_thread::sleep_for(chrono::seconds(10));
+			this->startSocketListener();
+		}
+		this->threadStarted = true;
+		this->threadSocketListener = thread(&SocketListener::socketListenerThread, this);
+	
+		this->logger->writeToLog("Server socket has been successfully opened", "SocketListener", "startSocketListener");
     }
     catch (SocketException ex)
     {
         stringstream logstream;
         logstream << "Failed to start socket listener. Error: " << ex.what();
         this->logger->writeToLog(logstream.str(), "SocketListener", "startSocketListener");
+		this->logger->writeToLog("Failed to bind socket. Retrying in 10 seconds");
+		this_thread::sleep_for(chrono::seconds(10));
+		this->startSocketListener();
     }
     catch (std::exception ex)
     {
