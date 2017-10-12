@@ -1,6 +1,7 @@
 # SSH-Tunnel-Plugin
 
 [![Gitter](https://badges.gitter.im/SSH-Tunnel-Plugin-for-Boardies-MySQL-Manager1/Lobby.svg)](https://gitter.im/SSH-Tunnel-Plugin-for-Boardies-MySQL-Manager1/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[Chat to us on Slack](https://join.slack.com/t/boardiesitsolutions/shared_invite/enQtMjQ2MTQ2OTIzOTI1LTJkYjQ5Zjc1ZjZmNDQ0MGQ3ZjM1NDFlZTI5ZmE3NjQ1ZjRkOTQ1NTliMmI0ZTMyOTViNWJkMWQ0NWUyM2Q2MjQ)
 
 First of all, thank you for your interest in Boardies MySQL Manager for Android and the PHP and SSH Tunnelling APIs. This is the source code for the SSH Tunnelling Plugin
 
