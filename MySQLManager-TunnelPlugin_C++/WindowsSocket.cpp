@@ -114,12 +114,13 @@ bool WindowsSocket::bindAndStartListening(int backlog)
 	@param clientAddr A memset initialised sockaddr_in structure where the client information will be stored when a new client connects
 	@return SOCKET A socket descriptor of the client connection
 */
-SOCKET WindowsSocket::acceptClientAndReturnSocket(sockaddr_in *clientAddr)
+SOCKET *WindowsSocket::acceptClientAndReturnSocket(sockaddr_in *clientAddr)
 {
-	SOCKET clientSocket = INVALID_SOCKET;
+	SOCKET *clientSocket = new SOCKET();
+	*clientSocket = INVALID_SOCKET;
 	//sockaddr_in clientAddr;
 	socklen_t sin_size = sizeof(struct sockaddr_in);
-	clientSocket = accept(this->serverSocket, (struct sockaddr*)clientAddr, &sin_size);
+	*clientSocket = accept(this->serverSocket, (struct sockaddr*)clientAddr, &sin_size);
 	return clientSocket;
 }
 
@@ -292,13 +293,10 @@ void WindowsSocket::closeSocket(SOCKET *socket)
 	if (*socket != -1)
 	{
 		int result = closesocket(*socket);
+		delete socket;
 		if (result < 0)
 		{
 			throw SocketException(this->getErrorStringFromErrorCode(result).c_str());
-		}
-		else
-		{
-			*socket = -1;
 		}
 	}
 }

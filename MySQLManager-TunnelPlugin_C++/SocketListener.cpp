@@ -79,9 +79,9 @@ void SocketListener::socketListenerThread()
 		sockaddr_in clientAddr;
                 memset(&clientAddr, 0, sizeof(sockaddr_in));
 #ifdef _WIN32
-		SOCKET clientSocket = socketManager.acceptClientAndReturnSocket(&clientAddr);
+		SOCKET *clientSocket = socketManager.acceptClientAndReturnSocket(&clientAddr);
 #else
-		int clientSocket = socketManager.acceptClientAndReturnSocket(&clientAddr);
+		int *clientSocket = socketManager.acceptClientAndReturnSocket(&clientAddr);
 #endif //!_WIN32
 
                 
@@ -90,7 +90,7 @@ void SocketListener::socketListenerThread()
 		//1 extra client has connected.
 		if (statusManager.getApplicationStatus() == StatusManager::ApplicationStatus::Stopping)
 		{
-			this->socketManager.closeSocket(&clientSocket);
+			this->socketManager.closeSocket(clientSocket);
 			this->socketManager.closeSocket();
 			return;
 		}
@@ -98,7 +98,7 @@ void SocketListener::socketListenerThread()
                 SocketListener::socketListenerMutex.lock();
 		SocketProcessor socketProcessor(this->logger, &socketManager);
                 //socketProcessor.processSocketData(&clientSocket);
-		std::thread *socketProcessorThread = new thread(&SocketProcessor::processSocketData, &socketProcessor, &clientSocket);
+		std::thread *socketProcessorThread = new thread(&SocketProcessor::processSocketData, &socketProcessor, clientSocket);
 		processingThreadList.push_back(socketProcessorThread);
                 this_thread::sleep_for(chrono::seconds(1));
                 SocketListener::socketListenerMutex.unlock();

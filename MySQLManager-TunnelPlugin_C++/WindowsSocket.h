@@ -24,7 +24,7 @@ public:
 	bool bindAndStartListening();
 	bool bindAndStartListening(int backlog);
 	SOCKET *returnSocket();
-	SOCKET acceptClientAndReturnSocket(sockaddr_in *clientAddr);
+	SOCKET *acceptClientAndReturnSocket(sockaddr_in *clientAddr);
 	int sendToSocket(SOCKET *clientSocket, std::string dataToSend);
 	std::string receiveDataOnSocket(SOCKET *socket);
 	std::string getErrorStringFromErrorCode(int errorCode);

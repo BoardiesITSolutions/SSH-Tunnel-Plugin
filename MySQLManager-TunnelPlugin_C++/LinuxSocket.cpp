@@ -142,14 +142,16 @@ bool LinuxSocket::bindAndStartListening()
 	@param clientAddr A memset initialised sockaddr_in structure where the client information will be stored when a new client connects
 	@return SOCKET A socket descriptor of the client connection
 */
-int LinuxSocket::acceptClientAndReturnSocket(sockaddr_in *clientAddr)
+int *LinuxSocket::acceptClientAndReturnSocket(sockaddr_in *clientAddr)
 {
     socklen_t clilen = sizeof(clientAddr);
-    int clientSocket = accept(this->serverSocket, (struct sockaddr *)&clientAddr, &clilen);
-    if (clientSocket < 0)
+    //int clientSocket = accept(this->serverSocket, (struct sockaddr *)&clientAddr, &clilen);
+	int *clientSocket = new int;
+	*clientSocket = accept(this->serverSocket, (struct sockaddr *)&clientAddr, &clilen);
+    if (*clientSocket < 0)
     {
         stringstream logstream;
-        logstream << "Unable to accept client socket. Error: " << strerror(clientSocket);
+        logstream << "Unable to accept client socket. Error: " << strerror(*clientSocket);
         throw SocketException(logstream.str().c_str());
     }
     return clientSocket;
@@ -246,6 +248,7 @@ void LinuxSocket::closeSocket(int *socket)
     if (*socket != -1)
     {
         int result = close(*socket);
+		delete socket;
         if (result < 0)
         {
             stringstream logstream;

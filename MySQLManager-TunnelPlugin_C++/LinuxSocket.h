@@ -20,7 +20,7 @@ class LinuxSocket : public BaseSocket
         bool createSocket(int family, int socketType, int protocol, int port, int bufferLength, std::string ipAddress); 
         bool bindAndStartListening();
         int returnSocket();
-        int acceptClientAndReturnSocket(sockaddr_in *clientAddr);
+        int *acceptClientAndReturnSocket(sockaddr_in *clientAddr);
         int sendToSocket(int *socket, std::string dataToSend);
         std::string receiveDataOnSocket(int * socket);
         void closeSocket();
