@@ -46,9 +46,9 @@ private:
 	std::string sshPassword;
 	std::string privateKey;
 	std::string certPassphrase;
-	int sshPort;
+	unsigned long long sshPort;
 	std::string sshHost;
-	int remoteMySQLPort;
+	unsigned long long remoteMySQLPort;
 	std::string mysqlServerHost;
 	int localPort;
 	static std::vector<ActiveTunnels> activeTunnelsList;

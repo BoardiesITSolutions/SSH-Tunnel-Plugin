@@ -383,42 +383,52 @@ bool TunnelManager::processTunnelClosure(Document& jsonObject)
 */
 bool TunnelManager::processTunnelCreation(Document& jsonObject)
 {
-	//Determine the auth method
-	const Value& sshDetails = jsonObject["sshDetails"];
-	if (std::string(sshDetails["authMethod"].GetString()).compare("Password") == 0)
+	try
 	{
-		authMethod = AuthMethod::Password;
-	}
-	else
-	{
-		authMethod = AuthMethod::PrivateKey;
-	}
-	sshUsername = sshDetails["sshUsername"].GetString();
-	if (authMethod == AuthMethod::Password)
-	{
-		sshPassword = sshDetails["sshPassword"].GetString();
-	}
-	else
-	{
-		privateKey = sshDetails["privateSSHKey"].GetString();
-		if (sshDetails.HasMember("certPassphrase"))
+		//Determine the auth method
+		const Value& sshDetails = jsonObject["sshDetails"];
+		if (std::string(sshDetails["authMethod"].GetString()).compare("Password") == 0)
 		{
-			if (!sshDetails["certPassphrase"].IsNull())
+			authMethod = AuthMethod::Password;
+		}
+		else
+		{
+			authMethod = AuthMethod::PrivateKey;
+		}
+		sshUsername = sshDetails["sshUsername"].GetString();
+		if (authMethod == AuthMethod::Password)
+		{
+			sshPassword = sshDetails["sshPassword"].GetString();
+		}
+		else
+		{
+			privateKey = sshDetails["privateSSHKey"].GetString();
+			if (sshDetails.HasMember("certPassphrase"))
 			{
-				certPassphrase = sshDetails["certPassphrase"].GetString();
+				if (!sshDetails["certPassphrase"].IsNull())
+				{
+					certPassphrase = sshDetails["certPassphrase"].GetString();
+				}
 			}
 		}
+		sshPort = (unsigned long long)sshDetails["sshPort"].GetDouble();
+		sshHost = sshDetails["sshHost"].GetString();
+		remoteMySQLPort = (unsigned long long)jsonObject["remoteMySQLPort"].GetDouble();
+		mysqlServerHost = jsonObject["mysqlHost"].GetString();
+		fingerprintConfirmed = jsonObject["fingerprintConfirmed"].GetBool();
+		if (jsonObject.HasMember("fingerprint"))
+		{
+			postedFingerprint = jsonObject["fingerprint"].GetString();
+		}
+		return true;
 	}
-	sshPort = sshDetails["sshPort"].GetInt();
-	sshHost = sshDetails["sshHost"].GetString();
-	remoteMySQLPort = jsonObject["remoteMySQLPort"].GetInt();
-	mysqlServerHost = jsonObject["mysqlHost"].GetString();
-	fingerprintConfirmed = jsonObject["fingerprintConfirmed"].GetBool();
-	if (jsonObject.HasMember("fingerprint"))
+	catch (exception& ex)
 	{
-		postedFingerprint = jsonObject["fingerprint"].GetString();
+		stringstream logstream;
+		logstream << "Failed to project JSON tunnel creation. Error: " << ex.what();
+		this->logger->writeToLog(logstream.str(), "TunnelManager", "processTunnelCreation");
+		return false;
 	}
-	return true;
 }
 
 /**
